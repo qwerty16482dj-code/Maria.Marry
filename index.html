@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maria Marry | Official</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #080808;
+            --accent: #ffffff;
+            --text-muted: #888888;
+            --timer-bg: rgba(255, 255, 255, 0.03);
+            --timer-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* ЛЕВАЯ ЧАСТЬ: КОМПАКТНОЕ ВИДЕО (35%) */
+        .video-side {
+            flex: 0.7;
+            height: 100vh;
+            background: #000;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .video-side video {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+
+        .video-side::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent 85%, var(--bg-dark) 100%);
+        }
+
+        /* ПРАВАЯ ЧАСТЬ: КОНТЕНТ (65%) */
+        .content-side {
+            flex: 1.3;
+            padding: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-dark);
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .avatar {
+            width: 130px; height: 130px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 6px; margin-bottom: 35px;
+            object-fit: cover; transition: transform 0.4s ease;
+        }
+        .avatar:hover { transform: scale(1.05); }
+
+        .header { text-align: center; margin-bottom: 60px; }
+        h1 { font-size: 3rem; font-weight: 200; letter-spacing: 6px; text-transform: uppercase; margin-bottom: 12px; }
+        .tagline { color: var(--text-muted); font-size: 0.85rem; letter-spacing: 4px; text-transform: uppercase; }
+
+        /* КНОПКИ-ССЫЛКИ */
+        .links { width: 100%; max-width: 420px; display: flex; flex-direction: column; }
+        .link-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 0;
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: 0.4s ease;
+        }
+        .link-item:hover {
+            border-bottom: 1px solid var(--accent);
+            padding-left: 15px;
+        }
+        .link-label { font-size: 1.15rem; font-weight: 400; }
+        .link-arrow { font-size: 1.3rem; opacity: 0.3; }
+
+        /* ТАЙМЕР-ТАБЛИЦА */
+        .timer-table {
+            margin-top: 70px; width: 100%; max-width: 340px;
+            background: var(--timer-bg); border: 1px solid var(--timer-border);
+            border-radius: 20px; padding: 25px; text-align: center;
+            backdrop-filter: blur(5px);
+        }
+        .timer-row-top { font-size: 0.7rem; letter-spacing: 2px; color: #ff3b30; font-weight: 600; margin-bottom: 12px; text-transform: uppercase; }
+        .timer-digits { font-size: 2rem; font-weight: 200; letter-spacing: 6px; color: var(--accent); }
+
+        @media (max-width: 1024px) {
+            body { flex-direction: column; overflow-y: auto; }
+            .video-side { height: 35vh; flex: none; }
+            .video-side::after { background: linear-gradient(to top, transparent 70%, var(--bg-dark) 100%); }
+            .content-side { height: auto; padding: 50px 24px; flex: none; }
+            h1 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="video-side">
+        <video autoplay muted loop playsinline>
+            <source src="assets/video/background.mp4" type="video/mp4">
+        </video>
+    </section>
+
+    <section class="content-side">
+        <img src="assets/img/avatar.jpg" alt="Profile" class="avatar">
+
+        <div class="header">
+            <h1>Maria Marry</h1>
+            <p class="tagline">Official Community</p>
+        </div>
+
+        <nav class="links">
+            <a href="https://onlyfans.com/maria.marry/trial/echsqpage2wmnqpf0caoylqiaz315aml" class="link-item" target="_blank">
+                <span class="link-label">Onlyfans Private</span>
+                <span class="link-arrow">→</span>
+            </a>
+            <a href="https://t.me/+qTAeYtm4dco5YTli" class="link-item" target="_blank">
+                <span class="link-label">Telegram Channel</span>
+                <span class="link-arrow">→</span>
+            </a>
+        </nav>
+
+        <div class="timer-table">
+            <div class="timer-row-top">🔥 Limited Offer Ends In</div>
+            <div class="timer-digits" id="countdown">00:24:42</div>
+        </div>
+    </section>
+
+    <script>
+        // Таймер, который сохраняет состояние в браузере
+        function startTimer(duration) {
+            const display = document.querySelector('#countdown');
+            let deadline = localStorage.getItem('maria_deadline');
+            
+            if (!deadline) {
+                deadline = Math.floor(Date.now() / 1000) + duration;
+                localStorage.setItem('maria_deadline', deadline);
+            }
+
+            const update = () => {
+                let now = Math.floor(Date.now() / 1000);
+                let diff = deadline - now;
+
+                if (diff <= 0) {
+                    display.textContent = "00:00:00";
+                    return;
+                }
+
+                let m = Math.floor((diff % 3600) / 60);
+                let s = diff % 60;
+                display.textContent = `00:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            };
+
+            setInterval(update, 1000);
+            update();
+        }
+
+        window.onload = () => startTimer(1482);
+    </script>
+</body>
+</html>
