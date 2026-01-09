@@ -109,64 +109,74 @@
         background-color: var(--bg-dark);
     }
 
-    /* ЛЕВАЯ ЧАСТЬ (ВИДЕО) НА МОБИЛЬНЫХ */
+    /* === ЛЕВАЯ ЧАСТЬ (ВИДЕО) НА МОБИЛЬНЫХ === */
     .video-side {
-        height: 50vh; /* Чуть уменьшил высоту, чтобы смотрелось аккуратнее */
+        height: 50vh;
         flex: none;
         width: 100%;
         position: relative;
-        background: #000; /* Фон на всякий случай */
-        line-height: 0; /* Убираем возможные текстовые отступы */
+        /* Устанавливаем черный фон контейнера, чтобы щель, если она появится, была черной */
+        background: #000;
+        /* Убираем любые возможные отступы шрифтов */
+        font-size: 0;
+        line-height: 0;
         margin: 0; padding: 0;
+        overflow: hidden; /* Обрезаем всё лишнее */
     }
 
     .video-side video {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        /* Фокус на верхней части, чтобы лицо было в кадре */
         object-position: center 20%;
-        display: block; /* ВАЖНО: Делаем видео блочным элементом */
-        border: none;
-        margin: 0; padding: 0;
+        display: block;
+        border: none; margin: 0; padding: 0;
+        
+        /* === ГЛАВНЫЕ ХАКИ ПРОТИВ ПОЛОСЫ === */
+        /* 1. Включаем GPU-ускорение и 2. Немного увеличиваем видео, чтобы перекрыть щель */
+        transform: translateZ(0) scale(1.005);
+        /* Дополнительная помощь рендеру */
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
     }
 
-    /* Мягкий градиент поверх видео снизу */
+    /* Градиент поверх видео */
     .video-side::after {
         content: '';
         position: absolute;
         bottom: 0; left: 0; width: 100%;
-        height: 40%; /* Высота затемнения */
+        height: 40%;
         background: linear-gradient(to top, var(--bg-dark) 0%, transparent 100%);
         z-index: 2;
-        pointer-events: none; /* Чтобы градиент не мешал кликам, если что */
+        pointer-events: none;
     }
 
-    /* ПРАВАЯ ЧАСТЬ (КОНТЕНТ) НА МОБИЛЬНЫХ */
+    /* === ПРАВАЯ ЧАСТЬ (КОНТЕНТ) === */
     .content-side {
         height: auto;
-        min-height: 50vh; /* Минимальная высота контента */
-        padding: 0 24px 60px 24px; /* Убрали отступ сверху */
+        min-height: 50vh;
+        padding: 0 24px 60px 24px;
         flex: none;
         width: 100%;
         background-color: var(--bg-dark);
         position: relative;
         z-index: 3;
+        /* Отрицательный маргин, чтобы точно притянуть контент к видео */
+        margin-top: -1px;
     }
 
-    /* Аватарка наплывает на видео */
     .avatar {
         width: 110px; height: 110px;
-        margin-top: -55px; /* Поднимаем вверх */
+        margin-top: -55px;
         margin-bottom: 25px;
         position: relative;
         z-index: 10;
-        background-color: var(--bg-dark); /* Фон под кругом */
+        background-color: var(--bg-dark);
+        /* Тоже применяем хак для плавности */
+        transform: translateZ(0);
     }
 
     h1 { font-size: 2.2rem; letter-spacing: 3px; }
-    
-    /* Компактный таймер */
     .timer-table { margin-top: 40px; padding: 15px; max-width: 280px; }
     .timer-digits { font-size: 1.5rem; letter-spacing: 3px; }
 }
