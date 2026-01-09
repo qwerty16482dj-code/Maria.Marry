@@ -109,19 +109,19 @@
         background-color: var(--bg-dark);
     }
 
-    /* === ЛЕВАЯ ЧАСТЬ (ВИДЕО) НА МОБИЛЬНЫХ === */
+    /* 1. КОНТЕЙНЕР ВИДЕО */
     .video-side {
         height: 50vh;
         flex: none;
         width: 100%;
         position: relative;
-        /* Устанавливаем черный фон контейнера, чтобы щель, если она появится, была черной */
         background: #000;
-        /* Убираем любые возможные отступы шрифтов */
-        font-size: 0;
-        line-height: 0;
-        margin: 0; padding: 0;
-        overflow: hidden; /* Обрезаем всё лишнее */
+        overflow: hidden; /* Обрезаем всё, что выходит за границы */
+        
+        /* ПРИНУДИТЕЛЬНОЕ ПЕРЕКРЫТИЕ: */
+        margin-bottom: -15px; /* Задвигаем видео под следующий блок */
+        padding: 0;
+        z-index: 1;
     }
 
     .video-side video {
@@ -130,55 +130,54 @@
         object-fit: cover;
         object-position: center 20%;
         display: block;
-        border: none; margin: 0; padding: 0;
         
-        /* === ГЛАВНЫЕ ХАКИ ПРОТИВ ПОЛОСЫ === */
-        /* 1. Включаем GPU-ускорение и 2. Немного увеличиваем видео, чтобы перекрыть щель */
-        transform: translateZ(0) scale(1.005);
-        /* Дополнительная помощь рендеру */
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
+        /* Убираем зазор, который браузеры оставляют для "хвостов" букв */
+        vertical-align: bottom; 
+        
+        /* Аппаратное ускорение */
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
     }
 
-    /* Градиент поверх видео */
+    /* Градиент теперь привязан к самому низу видео-контейнера */
     .video-side::after {
         content: '';
         position: absolute;
         bottom: 0; left: 0; width: 100%;
-        height: 40%;
+        height: 50%;
         background: linear-gradient(to top, var(--bg-dark) 0%, transparent 100%);
         z-index: 2;
         pointer-events: none;
     }
 
-    /* === ПРАВАЯ ЧАСТЬ (КОНТЕНТ) === */
+    /* 2. КОНТЕНТНАЯ ЧАСТЬ */
     .content-side {
         height: auto;
-        min-height: 50vh;
+        min-height: 55vh;
         padding: 0 24px 60px 24px;
         flex: none;
         width: 100%;
         background-color: var(--bg-dark);
+        
+        /* ПЕРЕКРЫТИЕ: */
         position: relative;
-        z-index: 3;
-        /* Отрицательный маргин, чтобы точно притянуть контент к видео */
-        margin-top: -1px;
+        z-index: 5; /* Поднимаем контент ВЫШЕ видео */
+        margin-top: 0; 
     }
 
+    /* Аватарка */
     .avatar {
         width: 110px; height: 110px;
-        margin-top: -55px;
+        /* Теперь отрицательный маргин аватарки работает вместе с наложением блоков */
+        margin-top: -55px; 
         margin-bottom: 25px;
         position: relative;
         z-index: 10;
         background-color: var(--bg-dark);
-        /* Тоже применяем хак для плавности */
-        transform: translateZ(0);
+        border: 4px solid var(--bg-dark); /* Рамка в цвет фона для мягкости */
     }
 
-    h1 { font-size: 2.2rem; letter-spacing: 3px; }
-    .timer-table { margin-top: 40px; padding: 15px; max-width: 280px; }
-    .timer-digits { font-size: 1.5rem; letter-spacing: 3px; }
+    h1 { font-size: 2.2rem; }
 }
  </style>
 </head>
