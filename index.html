@@ -106,51 +106,49 @@
     body {
         flex-direction: column;
         overflow-y: auto;
-        background-color: var(--bg-dark);
+        background-color: var(--bg-dark); /* Убедись, что это #080808 или чистый черный */
     }
 
-    /* 1. КОНТЕЙНЕР ВИДЕО */
+    /* 1. БЛОК ВИДЕО */
     .video-side {
         height: 50vh;
         flex: none;
         width: 100%;
         position: relative;
-        background: #000;
-        overflow: hidden; /* Обрезаем всё, что выходит за границы */
+        background-color: #000;
         
-        /* ПРИНУДИТЕЛЬНОЕ ПЕРЕКРЫТИЕ: */
-        margin-bottom: -15px; /* Задвигаем видео под следующий блок */
+        /* УБИРАЕМ ВСЕ ЗАЗОРЫ */
+        margin: 0 0 -20px 0; /* Принудительный нахлест вниз на 20 пикселей */
         padding: 0;
         z-index: 1;
+        overflow: hidden;
+
+        /* ХАК: Тень, направленная вниз, заполняющая щель */
+        box-shadow: 0 10px 15px 5px #000; 
     }
 
     .video-side video {
         width: 100%;
-        height: 100%;
+        height: calc(100% + 5px); /* Делаем видео чуть выше контейнера */
         object-fit: cover;
         object-position: center 20%;
         display: block;
-        
-        /* Убираем зазор, который браузеры оставляют для "хвостов" букв */
-        vertical-align: bottom; 
-        
-        /* Аппаратное ускорение */
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
+        margin: 0;
+        padding: 0;
+        outline: 1px solid transparent; /* Убирает артефакты краев */
     }
 
-    /* Градиент теперь привязан к самому низу видео-контейнера */
+    /* Градиент */
     .video-side::after {
         content: '';
         position: absolute;
         bottom: 0; left: 0; width: 100%;
-        height: 50%;
-        background: linear-gradient(to top, var(--bg-dark) 0%, transparent 100%);
+        height: 60%;
+        background: linear-gradient(to top, var(--bg-dark) 5%, transparent 100%);
         z-index: 2;
-        pointer-events: none;
     }
 
-    /* 2. КОНТЕНТНАЯ ЧАСТЬ */
+    /* 2. БЛОК КОНТЕНТА */
     .content-side {
         height: auto;
         min-height: 55vh;
@@ -159,22 +157,25 @@
         width: 100%;
         background-color: var(--bg-dark);
         
-        /* ПЕРЕКРЫТИЕ: */
+        /* ПОДНИМАЕМ КОНТЕНТ НАД ВИДЕО */
         position: relative;
-        z-index: 5; /* Поднимаем контент ВЫШЕ видео */
-        margin-top: 0; 
+        z-index: 10; 
+        margin-top: 0;
+
+        /* ХАК: Тень, направленная вверх, перекрывающая стык */
+        box-shadow: 0 -10px 20px 5px var(--bg-dark);
     }
 
-    /* Аватарка */
     .avatar {
-        width: 110px; height: 110px;
-        /* Теперь отрицательный маргин аватарки работает вместе с наложением блоков */
-        margin-top: -55px; 
+        width: 110px;
+        height: 110px;
+        margin-top: -55px; /* Аватарка по-прежнему наплывает */
         margin-bottom: 25px;
         position: relative;
-        z-index: 10;
+        z-index: 15;
         background-color: var(--bg-dark);
-        border: 4px solid var(--bg-dark); /* Рамка в цвет фона для мягкости */
+        border: 4px solid var(--bg-dark);
+        border-radius: 50%;
     }
 
     h1 { font-size: 2.2rem; }
