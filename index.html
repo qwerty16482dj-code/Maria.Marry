@@ -101,65 +101,76 @@
         .timer-row-top { font-size: 0.7rem; letter-spacing: 2px; color: #ff3b30; font-weight: 600; margin-bottom: 12px; text-transform: uppercase; }
         .timer-digits { font-size: 2rem; font-weight: 200; letter-spacing: 6px; color: var(--accent); }
 
+/* Вставьте этот блок ЗАМЕНЯЯ старый @media (max-width: 1024px) */
 @media (max-width: 1024px) {
-    body { 
-        flex-direction: column; 
-        overflow-y: auto; 
-        background-color: #000; /* Фон страницы под видео */
+    body {
+        flex-direction: column;
+        overflow-y: auto;
+        background-color: var(--bg-dark);
     }
 
-    /* 1. Настройка видео на мобильных */
-    .video-side { 
-        height: 55vh; /* Увеличили высоту для лучшего охвата */
-        flex: none; 
+    /* ЛЕВАЯ ЧАСТЬ (ВИДЕО) НА МОБИЛЬНЫХ */
+    .video-side {
+        height: 50vh; /* Чуть уменьшил высоту, чтобы смотрелось аккуратнее */
+        flex: none;
         width: 100%;
         position: relative;
+        background: #000; /* Фон на всякий случай */
+        line-height: 0; /* Убираем возможные текстовые отступы */
+        margin: 0; padding: 0;
     }
 
     .video-side video {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        /* Фокусируемся на верхней части видео, чтобы не резать голову */
-        object-position: center 20%; 
+        /* Фокус на верхней части, чтобы лицо было в кадре */
+        object-position: center 20%;
+        display: block; /* ВАЖНО: Делаем видео блочным элементом */
+        border: none;
+        margin: 0; padding: 0;
     }
 
-    /* 2. Мягкое бесшовное затухание */
-    .video-side::after { 
+    /* Мягкий градиент поверх видео снизу */
+    .video-side::after {
         content: '';
         position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 60%; /* Глубокое затухание на половину видео */
-        background: linear-gradient(to top, #080808 0%, transparent 100%);
+        bottom: 0; left: 0; width: 100%;
+        height: 40%; /* Высота затемнения */
+        background: linear-gradient(to top, var(--bg-dark) 0%, transparent 100%);
         z-index: 2;
+        pointer-events: none; /* Чтобы градиент не мешал кликам, если что */
     }
 
-    /* 3. Контентная часть */
-    .content-side { 
-        height: auto; 
-        padding: 40px 24px 80px 24px; /* Добавили отступ снизу */
-        flex: none; 
+    /* ПРАВАЯ ЧАСТЬ (КОНТЕНТ) НА МОБИЛЬНЫХ */
+    .content-side {
+        height: auto;
+        min-height: 50vh; /* Минимальная высота контента */
+        padding: 0 24px 60px 24px; /* Убрали отступ сверху */
+        flex: none;
         width: 100%;
-        background-color: #080808; /* Должен совпадать с цветом градиента выше */
-        margin-top: -10px; /* Убираем возможную микро-щель между блоками */
-    }
-
-    .avatar {
-        width: 110px;
-        height: 110px;
-        margin-top: -55px; /* Приподнимаем аватарку, чтобы она заходила на видео */
-        z-index: 5;
+        background-color: var(--bg-dark);
         position: relative;
-        background: #080808;
+        z-index: 3;
     }
 
-    h1 { 
-        font-size: 2.4rem; 
-        margin-top: 10px;
+    /* Аватарка наплывает на видео */
+    .avatar {
+        width: 110px; height: 110px;
+        margin-top: -55px; /* Поднимаем вверх */
+        margin-bottom: 25px;
+        position: relative;
+        z-index: 10;
+        background-color: var(--bg-dark); /* Фон под кругом */
     }
-}    </style>
+
+    h1 { font-size: 2.2rem; letter-spacing: 3px; }
+    
+    /* Компактный таймер */
+    .timer-table { margin-top: 40px; padding: 15px; max-width: 280px; }
+    .timer-digits { font-size: 1.5rem; letter-spacing: 3px; }
+}
+ </style>
 </head>
 <body>
 
