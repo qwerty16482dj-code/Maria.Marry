@@ -101,14 +101,65 @@
         .timer-row-top { font-size: 0.7rem; letter-spacing: 2px; color: #ff3b30; font-weight: 600; margin-bottom: 12px; text-transform: uppercase; }
         .timer-digits { font-size: 2rem; font-weight: 200; letter-spacing: 6px; color: var(--accent); }
 
-        @media (max-width: 1024px) {
-            body { flex-direction: column; overflow-y: auto; }
-            .video-side { height: 35vh; flex: none; }
-            .video-side::after { background: linear-gradient(to top, transparent 70%, var(--bg-dark) 100%); }
-            .content-side { height: auto; padding: 50px 24px; flex: none; }
-            h1 { font-size: 2.2rem; }
-        }
-    </style>
+@media (max-width: 1024px) {
+    body { 
+        flex-direction: column; 
+        overflow-y: auto; 
+        background-color: #000; /* Фон страницы под видео */
+    }
+
+    /* 1. Настройка видео на мобильных */
+    .video-side { 
+        height: 55vh; /* Увеличили высоту для лучшего охвата */
+        flex: none; 
+        width: 100%;
+        position: relative;
+    }
+
+    .video-side video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        /* Фокусируемся на верхней части видео, чтобы не резать голову */
+        object-position: center 20%; 
+    }
+
+    /* 2. Мягкое бесшовное затухание */
+    .video-side::after { 
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 60%; /* Глубокое затухание на половину видео */
+        background: linear-gradient(to top, #080808 0%, transparent 100%);
+        z-index: 2;
+    }
+
+    /* 3. Контентная часть */
+    .content-side { 
+        height: auto; 
+        padding: 40px 24px 80px 24px; /* Добавили отступ снизу */
+        flex: none; 
+        width: 100%;
+        background-color: #080808; /* Должен совпадать с цветом градиента выше */
+        margin-top: -10px; /* Убираем возможную микро-щель между блоками */
+    }
+
+    .avatar {
+        width: 110px;
+        height: 110px;
+        margin-top: -55px; /* Приподнимаем аватарку, чтобы она заходила на видео */
+        z-index: 5;
+        position: relative;
+        background: #080808;
+    }
+
+    h1 { 
+        font-size: 2.4rem; 
+        margin-top: 10px;
+    }
+}    </style>
 </head>
 <body>
 
@@ -146,31 +197,51 @@
     <script>
         // Таймер, который сохраняет состояние в браузере
         function startTimer(duration) {
-            const display = document.querySelector('#countdown');
-            let deadline = localStorage.getItem('maria_deadline');
-            
-            if (!deadline) {
-                deadline = Math.floor(Date.now() / 1000) + duration;
-                localStorage.setItem('maria_deadline', deadline);
-            }
+    const display = document.querySelector('#countdown');
+    
+    // Функция для получения или создания дедлайна
+    function getDeadline() {
+        let deadline = localStorage.getItem('maria_deadline');
+        let now = Math.floor(Date.now() / 1000);
 
-            const update = () => {
-                let now = Math.floor(Date.now() / 1000);
-                let diff = deadline - now;
-
-                if (diff <= 0) {
-                    display.textContent = "00:00:00";
-                    return;
-                }
-
-                let m = Math.floor((diff % 3600) / 60);
-                let s = diff % 60;
-                display.textContent = `00:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-            };
-
-            setInterval(update, 1000);
-            update();
+        // Если дедлайна нет или он уже в прошлом — создаем новый
+        if (!deadline || parseInt(deadline) <= now) {
+            deadline = now + duration;
+            localStorage.setItem('maria_deadline', deadline);
         }
+        return parseInt(deadline);
+    }
+
+    let deadline = getDeadline();
+
+    const update = () => {
+        let now = Math.floor(Date.now() / 1000);
+        let diff = deadline - now;
+
+        // КРИТИЧЕСКИЙ МОМЕНТ: Если таймер дошел до 0
+        if (diff <= 0) {
+            // Создаем новый цикл отсчета
+            deadline = Math.floor(Date.now() / 1000) + duration;
+            localStorage.setItem('maria_deadline', deadline);
+            diff = duration; // Сбрасываем текущую разницу для мгновенного обновления текста
+        }
+
+        let m = Math.floor((diff % 3600) / 60);
+        let s = diff % 60;
+        
+        // Красивое форматирование 00:MM:SS
+        display.textContent = `00:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    };
+
+    // Запускаем обновление каждую секунду
+    setInterval(update, 1000);
+    update(); // Запуск сразу при загрузке
+}
+
+window.onload = () => {
+    // 1500 секунд = 25 минут. Можешь поменять на любое число.
+    startTimer(1500); 
+};
 
         window.onload = () => startTimer(1482);
     </script>
